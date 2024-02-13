@@ -3,21 +3,9 @@ import { HorizontalNavItemsType } from 'src/@core/layouts/types'
 
 const navigation = (): HorizontalNavItemsType => [
   {
-    title: 'Kalend',
-    path: '/home',
-    icon: 'tabler:smart-home'
-  },
-  {
-    title: 'Second Page',
-    path: '/second-page',
-    icon: 'tabler:mail'
-  },
-  {
-    path: '/acl',
-    action: 'read',
-    subject: 'acl-page',
-    title: 'Access Control',
-    icon: 'tabler:shield'
+    title: 'Kalendár',
+    path: '/calendar',
+    icon: 'tabler:calendar'
   }
 ]
 

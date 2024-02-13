@@ -97,7 +97,7 @@ const SidebarLeft = (props: SidebarLeftType) => {
         <Box sx={{ p: 6, width: '100%' }}>
           <Button fullWidth variant='contained' sx={{ '& svg': { mr: 2 } }} onClick={handleSidebarToggleSidebar}>
             <Icon icon='tabler:plus' fontSize='1.125rem' />
-            Add Event
+            Pridať tréning
           </Button>
         </Box>
 
@@ -115,7 +115,7 @@ const SidebarLeft = (props: SidebarLeftType) => {
         <Divider sx={{ width: '100%', m: '0 !important' }} />
         <Box sx={{ p: 6, width: '100%', display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
           <Typography variant='body2' sx={{ mb: 2, color: 'text.disabled', textTransform: 'uppercase' }}>
-            Filters
+            Filter
           </Typography>
           <FormControlLabel
             label='View All'
@@ -128,6 +128,7 @@ const SidebarLeft = (props: SidebarLeftType) => {
             }
           />
           {renderFilters}
+          <Divider sx={{ width: '100%', m: '0 !important' }} />
         </Box>
       </Drawer>
     )
