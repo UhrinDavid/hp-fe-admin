@@ -8,12 +8,15 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 import interactionPlugin from '@fullcalendar/interaction'
+import skLocale from '@fullcalendar/core/locales/sk'
 
 // ** Types
 import { CalendarType } from 'src/declarations/types/calendarTypes'
 
 // ** Third Party Style Import
 import 'bootstrap-icons/font/bootstrap-icons.css'
+
+import i18n from 'i18next'
 
 const blankEvent = {
   title: '',
@@ -161,7 +164,13 @@ const Calendar = (props: CalendarType) => {
       ref: calendarRef,
 
       // Get direction from app state (store)
-      direction
+      direction,
+
+      // register all supported locales
+      locales: [skLocale],
+
+      // set default locale
+      locale: i18n.language
     }
 
     // @ts-ignore

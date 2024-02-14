@@ -21,6 +21,7 @@ import HorizontalAppBarContent from './components/horizontal/AppBarContent'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   children: ReactNode
@@ -30,6 +31,7 @@ interface Props {
 const UserLayout = ({ children, contentHeightFixed }: Props) => {
   // ** Hooks
   const { settings, saveSettings } = useSettings()
+  const { t } = useTranslation()
 
   // ** Vars for server side navigation
   // const { menuItems: verticalMenuItems } = ServerSideVerticalNavItems()
@@ -57,7 +59,7 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
       contentHeightFixed={contentHeightFixed}
       horizontalLayoutProps={{
         navMenu: {
-          navItems: HorizontalNavItems()
+          navItems: HorizontalNavItems(t)
 
           // Uncomment the below line when using server-side menu in horizontal layout and comment the above line
           // navItems: horizontalMenuItems

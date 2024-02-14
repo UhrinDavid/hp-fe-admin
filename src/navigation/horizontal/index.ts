@@ -1,9 +1,9 @@
 // ** Type import
 import { HorizontalNavItemsType } from 'src/@core/layouts/types'
 
-const navigation = (): HorizontalNavItemsType => [
+const navigation = (t: any): HorizontalNavItemsType => [
   {
-    title: 'Kalendár',
+    title: t('pageTitleCalendar'),
     path: '/calendar',
     icon: 'tabler:calendar'
   }

@@ -9,6 +9,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 
 // ** Third Party Imports
 import DatePicker from 'react-datepicker'
+import i18n from 'i18next'
 
 // ** Icons Imports
 import Icon from 'src/@core/components/icon'
@@ -19,6 +20,7 @@ import { SidebarLeftType, CalendarFiltersType } from 'src/declarations/types/cal
 
 // ** Styled Component
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import { useTranslation } from 'react-i18next'
 
 const SidebarLeft = (props: SidebarLeftType) => {
   const {
@@ -35,6 +37,8 @@ const SidebarLeft = (props: SidebarLeftType) => {
     handleLeftSidebarToggle,
     handleAddEventSidebarToggle
   } = props
+
+  const { t } = useTranslation()
 
   const colorsArr = calendarsColor ? Object.entries(calendarsColor) : []
 
@@ -97,7 +101,7 @@ const SidebarLeft = (props: SidebarLeftType) => {
         <Box sx={{ p: 6, width: '100%' }}>
           <Button fullWidth variant='contained' sx={{ '& svg': { mr: 2 } }} onClick={handleSidebarToggleSidebar}>
             <Icon icon='tabler:plus' fontSize='1.125rem' />
-            Pridať tréning
+            {t('addTrainingButton')}
           </Button>
         </Box>
 
@@ -110,7 +114,7 @@ const SidebarLeft = (props: SidebarLeftType) => {
             '& .react-datepicker': { boxShadow: 'none !important', border: 'none !important' }
           }}
         >
-          <DatePicker inline onChange={date => calendarApi.gotoDate(date)} />
+          <DatePicker inline onChange={date => calendarApi.gotoDate(date)} locale={i18n.language} />
         </DatePickerWrapper>
         <Divider sx={{ width: '100%', m: '0 !important' }} />
         <Box sx={{ p: 6, width: '100%', display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>

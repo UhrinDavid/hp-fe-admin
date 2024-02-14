@@ -15,9 +15,11 @@ import { CacheProvider } from '@emotion/react'
 import type { EmotionCache } from '@emotion/cache'
 
 // ** Config Imports
-
+import 'src/configs/i18n'
 import { defaultACLObj } from 'src/configs/acl'
 import themeConfig from 'src/configs/themeConfig'
+import { registerLocale } from 'react-datepicker'
+import sk from 'date-fns/locale/sk'
 
 // ** Fake-DB Import
 import 'src/@fake-db'
@@ -116,6 +118,9 @@ const App = (props: ExtendedAppProps) => {
   const guestGuard = Component.guestGuard ?? false
 
   const aclAbilities = Component.acl ?? defaultACLObj
+
+  // react-datepicker locales registration
+  registerLocale('sk', sk)
 
   return (
     <Provider store={store}>
