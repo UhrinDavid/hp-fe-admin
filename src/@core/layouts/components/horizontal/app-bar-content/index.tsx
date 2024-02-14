@@ -58,8 +58,8 @@ const AppBarContent = (props: Props) => {
                 y2='12.0014'
                 gradientUnits='userSpaceOnUse'
               >
-                <stop stop-color='#00A79D' />
-                <stop offset='1' stop-color='#27AAE1' />
+                <stop stopColor='#00A79D' />
+                <stop offset='1' stopColor='#27AAE1' />
               </linearGradient>
             </defs>
           </svg>
