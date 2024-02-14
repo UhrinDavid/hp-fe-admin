@@ -76,7 +76,7 @@ const HorizontalLayout = (props: LayoutProps) => {
   } = props
 
   // ** Vars
-  const { skin, appBar, navHidden, appBarBlur, contentWidth } = settings
+  const { skin, appBar, navHidden, appBarBlur } = settings
   const appBarProps = horizontalLayoutProps?.appBar?.componentProps
   const userNavMenuContent = horizontalLayoutProps?.navMenu?.content
 
@@ -121,7 +121,6 @@ const HorizontalLayout = (props: LayoutProps) => {
               className='navbar-content-container'
               sx={{
                 mx: 'auto',
-                ...(contentWidth === 'boxed' && { '@media (min-width:1440px)': { maxWidth: 1440 } }),
                 minHeight: theme => `${(theme.mixins.toolbar.minHeight as number) - 2}px !important`
               }}
             >
@@ -142,7 +141,6 @@ const HorizontalLayout = (props: LayoutProps) => {
                 className='horizontal-nav-content-container'
                 sx={{
                   mx: 'auto',
-                  ...(contentWidth === 'boxed' && { '@media (min-width:1440px)': { maxWidth: 1440 } }),
                   minHeight: theme =>
                     `${(theme.mixins.toolbar.minHeight as number) - 4 - (skin === 'bordered' ? 1 : 0)}px !important`
                 }}
@@ -163,12 +161,7 @@ const HorizontalLayout = (props: LayoutProps) => {
         <ContentWrapper
           className='layout-page-content'
           sx={{
-            ...(contentHeightFixed && { display: 'flex', overflow: 'hidden' }),
-            ...(contentWidth === 'boxed' && {
-              mx: 'auto',
-              '@media (min-width:1440px)': { maxWidth: 1440 },
-              '@media (min-width:1200px)': { maxWidth: '100%' }
-            })
+            ...(contentHeightFixed && { display: 'flex', overflow: 'hidden' })
           }}
         >
           {children}
