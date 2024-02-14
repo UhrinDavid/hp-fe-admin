@@ -170,7 +170,9 @@ const Calendar = (props: CalendarType) => {
       locales: [skLocale],
 
       // set default locale
-      locale: i18n.language
+      locale: i18n.language,
+
+      height: '100%'
     }
 
     // @ts-ignore

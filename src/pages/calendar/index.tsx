@@ -74,6 +74,9 @@ const AppCalendar = () => {
         boxShadow: skin === 'bordered' ? 0 : 6,
         ...(skin === 'bordered' && { border: theme => `1px solid ${theme.palette.divider}` })
       }}
+      style={{
+        height: '100%'
+      }}
     >
       <SidebarLeft
         store={store}
