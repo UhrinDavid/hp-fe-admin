@@ -10,6 +10,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 // ** Third Party Imports
 import DatePicker from 'react-datepicker'
 import i18n from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 // ** Icons Imports
 import Icon from 'src/@core/components/icon'
@@ -20,7 +21,7 @@ import { SidebarLeftType, CalendarFiltersType } from 'src/declarations/types/cal
 
 // ** Styled Component
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-import { useTranslation } from 'react-i18next'
+import ExpandableCheckbox from './ExpandableCheckbox'
 
 const SidebarLeft = (props: SidebarLeftType) => {
   const {
@@ -119,20 +120,26 @@ const SidebarLeft = (props: SidebarLeftType) => {
         <Divider sx={{ width: '100%', m: '0 !important' }} />
         <Box sx={{ p: 6, width: '100%', display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
           <Typography variant='body2' sx={{ mb: 2, color: 'text.disabled', textTransform: 'uppercase' }}>
-            Filter
+            {t('calendarFilterTitle')}
           </Typography>
           <FormControlLabel
-            label='View All'
+            label={t('calendarMyCalendarCheckbox')}
             sx={{ '& .MuiFormControlLabel-label': { color: 'text.secondary' } }}
-            control={
-              <Checkbox
-                checked={store.selectedCalendars.length === colorsArr.length}
-                onChange={e => dispatch(handleAllCalendars(e.target.checked))}
-              />
-            }
+            control={<Checkbox />}
           />
-          {renderFilters}
+          <ExpandableCheckbox
+            labelMasterCheckbox={t('calendarOtherTrainersCheckbox')}
+            handleClickCheckbox={e => dispatch(handleAllCalendars(e.target.checked))}
+            selectedGroupItemsLength={store.selectedCalendars.length}
+            expandContent={renderFilters}
+          />
           <Divider sx={{ width: '100%', m: '0 !important' }} />
+          <ExpandableCheckbox
+            labelMasterCheckbox={t('calendarAllClientsCheckbox')}
+            handleClickCheckbox={e => dispatch(handleAllCalendars(e.target.checked))}
+            selectedGroupItemsLength={store.selectedCalendars.length}
+            expandContent={renderFilters}
+          />
         </Box>
       </Drawer>
     )

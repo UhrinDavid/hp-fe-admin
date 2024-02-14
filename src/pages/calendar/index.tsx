@@ -20,7 +20,7 @@ import { CalendarColors, CalendarFiltersType } from 'src/declarations/types/cale
 import Calendar from 'src/views/pages/calendar/Calendar'
 import SidebarLeft from 'src/views/pages/calendar/SidebarLeft'
 import CalendarWrapper from 'src/@core/styles/libs/fullcalendar'
-import AddEventSidebar from 'src/views/pages/calendar/AddEventSidebar'
+import AddTrainingSidebar from 'src/views/pages/calendar/AddTrainingSidebar'
 
 // ** Actions
 import {
@@ -116,7 +116,7 @@ const AppCalendar = () => {
           handleAddEventSidebarToggle={handleAddEventSidebarToggle}
         />
       </Box>
-      <AddEventSidebar
+      <AddTrainingSidebar
         store={store}
         dispatch={dispatch}
         addEvent={addEvent}

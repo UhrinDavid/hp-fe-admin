@@ -1,8 +1,10 @@
 // ** Types
+import { ReactNode } from 'react'
 import { Dispatch } from 'redux'
 
 // ** Theme Type Import
 import { ThemeColor } from 'src/@core/layouts/types'
+import { Client, Trainer } from './global'
 
 export type CalendarFiltersType = 'Personal' | 'Business' | 'Family' | 'Holiday' | 'ETC'
 
@@ -60,6 +62,9 @@ export type CalendarStoreType = {
   events: EventType[]
   selectedEvent: null | EventType
   selectedCalendars: CalendarFiltersType[] | string[]
+  eventTypes: string[]
+  trainers: Trainer[]
+  clients: Client[]
 }
 
 export type CalendarType = {
@@ -101,4 +106,11 @@ export type AddEventSidebarType = {
   updateEvent: (event: EventType) => void
   handleAddEventSidebarToggle: () => void
   handleSelectEvent: (event: null | EventType) => void
+}
+
+export type ExpandableCheckboxType = {
+  labelMasterCheckbox: string
+  handleClickCheckbox: (e: any) => void
+  selectedGroupItemsLength: number
+  expandContent: ReactNode[]
 }

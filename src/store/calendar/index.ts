@@ -57,7 +57,32 @@ export const appCalendarSlice = createSlice({
   initialState: {
     events: [],
     selectedEvent: null,
-    selectedCalendars: ['Personal', 'Business', 'Family', 'Holiday', 'ETC']
+    selectedCalendars: ['Personal', 'Business', 'Family', 'Holiday', 'ETC'],
+    eventTypes: ['training', 'vacation', 'busy'],
+    trainers: [
+      {
+        id: 1,
+        firstName: 'Patrik',
+        lastName: 'Pytel'
+      },
+      {
+        id: 2,
+        firstName: 'Milan',
+        lastName: 'Bališ'
+      }
+    ],
+    clients: [
+      {
+        id: 1,
+        firstName: 'Peter',
+        lastName: 'Sekera'
+      },
+      {
+        id: 2,
+        firstName: 'Katka',
+        lastName: 'Ďurková'
+      }
+    ]
   },
   reducers: {
     handleSelectEvent: (state, action) => {
