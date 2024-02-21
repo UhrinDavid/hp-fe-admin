@@ -17,7 +17,7 @@ const users: UserDataType[] = [
     password: 'admin',
     fullName: 'Patrik Pytel',
     username: 'pato',
-    email: 'pato@healthperformance.sk'
+    email: 'admin@vuexy.com'
   },
   {
     id: 2,
@@ -25,7 +25,7 @@ const users: UserDataType[] = [
     password: 'client',
     fullName: 'Patrik Pytel',
     username: 'pato',
-    email: 'pato@healthperformance.sk'
+    email: 'admin@vuexy.com'
   }
 ]
 
