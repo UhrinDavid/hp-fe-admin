@@ -16,7 +16,6 @@
   "editTrainingOrEvent": "Upraviť tréning alebo udalosť",
   "startDate": "Začiatok",
   "endDate": "Koniec",
-  "eventType": "Typ tréningu/udalosti",
   "training": "Tréning",
   "vacation": "Dovolenka",
   "busy": "Som zaneprázdnený",
@@ -28,5 +27,16 @@
   "substituteTrainer": "Zaskakujúci tréner",
   "hasAssistant": "Asistent",
   "assistantTrainer": "Asistent trénera",
-  "clients": "Men-o/á klient-a/ov"
+  "assistantTrainerEarnings": "Sadzba asistujúceho trénera (€)",
+  "clients": "Men-o/á klient-a/ov",
+  "shouldRepeatEvent": "Opakovať udalosť",
+  "repeatEventUntilDate": "Opakovať do",
+  "trainingOption": "Typ tréningu",
+  "room": "Miestnosť",
+  "oneOnOne": "1na1",
+  "twoOnOne": "2na1",
+  "threeOnOne": "3na1",
+  "smallGroup": "Small group",
+  "diagnostics": "Diagnostika",
+  "consultation": "Konzultácia"
 }

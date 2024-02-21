@@ -14,9 +14,9 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
+import DatePicker from 'src/@core/components/datepicker'
 
 // ** Third Party Imports
-import DatePicker from 'react-datepicker'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -39,14 +39,18 @@ interface DefaultStateType {
   startDate: Date | string
   endDate: Date | string
   isAllDay: boolean
-  eventType: string
+  shouldRepeatEvent: boolean
+  repeatDays: string[] | undefined
+  repeatEventUntilDate: Date | string | undefined
+  trainingOption: number
+  room: number
   trainerId: number
   trainerEarnings: number
   isSubstituted: boolean
   substituteTrainerId: number | undefined
   hasAssistant: boolean
   assistantTrainerId: number | undefined
-  trainingGroupId: undefined
+  assistantTrainerEarnings: number | undefined
   clientIds: number[] | number | undefined
   clientCost: number
   note: string
@@ -56,14 +60,18 @@ const defaultState: DefaultStateType = {
   startDate: new Date(),
   endDate: new Date(),
   isAllDay: false,
-  eventType: 'training',
+  shouldRepeatEvent: false,
+  repeatDays: undefined,
+  repeatEventUntilDate: undefined,
+  room: 1,
+  trainingOption: 1,
   trainerId: 1,
   trainerEarnings: 20,
   isSubstituted: false,
   substituteTrainerId: undefined,
   hasAssistant: false,
   assistantTrainerId: undefined,
-  trainingGroupId: undefined,
+  assistantTrainerEarnings: undefined,
   clientIds: [],
   clientCost: 25,
   note: ''
@@ -74,10 +82,7 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
   const {
     store,
     dispatch,
-    addEvent,
-    updateEvent,
     drawerWidth,
-    calendarApi,
     deleteEvent,
     handleSelectEvent,
     addEventSidebarOpen,
@@ -89,13 +94,7 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
   // ** States
   const [values, setValues] = useState<DefaultStateType>(defaultState)
 
-  const {
-    control,
-    setValue,
-    clearErrors,
-    handleSubmit,
-    formState: { errors }
-  } = useForm({ defaultValues: { title: '' } })
+  const { setValue, clearErrors, handleSubmit } = useForm({ defaultValues: { title: '' } })
 
   const handleSidebarClose = async () => {
     setValues(defaultState)
@@ -143,15 +142,14 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
   }
 
   const resetToStoredValues = useCallback(() => {
-    if (store.selectedEvent !== null) {
-      const event = store.selectedEvent
-
-      // setValues({
-      //   endDate: event.end !== null ? event.end : event.start,
-      //   startDate: event.start !== null ? event.start : new Date()
-      // })
-    }
-  }, [setValue, store.selectedEvent])
+    // if (store.selectedEvent !== null) {
+    //   const event = store.selectedEvent
+    //   // setValues({
+    //   //   endDate: event.end !== null ? event.end : event.start,
+    //   //   startDate: event.start !== null ? event.start : new Date()
+    //   // })
+    // }
+  }, [])
 
   const resetToEmptyValues = useCallback(() => {
     setValue('title', '')
@@ -180,13 +178,13 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
   })
 
   const RenderSidebarFooter = () => {
-    if (store.selectedEvent === null || (store.selectedEvent !== null && !store.selectedEvent.title.length)) {
+    if (store.selectedEvent?.id !== undefined) {
       return (
         <Fragment>
           <Button type='submit' variant='contained' sx={{ mr: 4 }}>
-            {t('create')}
+            {t('save')}
           </Button>
-          <Button variant='tonal' color='secondary' onClick={resetToEmptyValues}>
+          <Button variant='tonal' color='secondary' onClick={resetToStoredValues}>
             {t('cancel')}
           </Button>
         </Fragment>
@@ -195,9 +193,9 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
       return (
         <Fragment>
           <Button type='submit' variant='contained' sx={{ mr: 4 }}>
-            {t('save')}
+            {t('create')}
           </Button>
-          <Button variant='tonal' color='secondary' onClick={resetToStoredValues}>
+          <Button variant='tonal' color='secondary' onClick={resetToEmptyValues}>
             {t('cancel')}
           </Button>
         </Fragment>
@@ -222,12 +220,10 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
         }}
       >
         <Typography variant='h5'>
-          {store.selectedEvent !== null && store.selectedEvent.title.length
-            ? t('editTrainingOrEvent')
-            : t('addTrainingOrEvent')}
+          {store.selectedEvent?.id !== undefined ? t('editTrainingOrEvent') : t('addTrainingOrEvent')}
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {store.selectedEvent !== null && store.selectedEvent.title.length ? (
+          {store.selectedEvent?.id !== undefined ? (
             <IconButton
               size='small'
               onClick={handleDeleteEvent}
@@ -295,22 +291,99 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
                 }
               />
             </FormControl>
+
+            <FormControl sx={{ mb: 4, display: 'block' }}>
+              <FormControlLabel
+                label={t('shouldRepeatEvent')}
+                control={
+                  <Switch
+                    checked={values.shouldRepeatEvent}
+                    onChange={e =>
+                      setValues({ ...values, shouldRepeatEvent: e.target.checked, repeatEventUntilDate: undefined })
+                    }
+                  />
+                }
+              />
+            </FormControl>
+            {values.shouldRepeatEvent && (
+              <Box sx={{ mb: 4 }}>
+                <DatePicker
+                  selectsStart
+                  id='event-repeat-until-date'
+                  selected={values.repeatEventUntilDate as EventDateType}
+                  showTimeSelect={false}
+                  dateFormat={'yyyy-MM-dd'}
+                  customInput={
+                    <PickersComponent label={t('repeatEventUntilDate') ?? ''} registername='repeatEventUntilDate' />
+                  }
+                  onChange={(date: Date) => setValues({ ...values, repeatEventUntilDate: new Date(date) })}
+                />
+              </Box>
+            )}
+
             <CustomTextField
               select
               fullWidth
               sx={{ mb: 4 }}
-              label={t('eventType')}
+              label={t('trainingOption')}
               SelectProps={{
-                value: values.eventType,
-                onChange: e => setValues({ ...values, eventType: e.target.value as string })
+                value: values.trainingOption,
+                onChange: e => setValues({ ...values, trainingOption: e.target.value as number })
               }}
             >
-              {store.eventTypes.map(type => (
-                <MenuItem key={type} value={type}>
-                  {t(type)}
+              {store.trainingOptions.map(option => (
+                <MenuItem key={option.name} value={option.id}>
+                  {t(option.name)}
                 </MenuItem>
               ))}
             </CustomTextField>
+
+            <CustomTextField
+              select
+              fullWidth
+              sx={{ mb: 4 }}
+              label={t('room')}
+              SelectProps={{
+                value: values.room,
+                onChange: e => setValues({ ...values, room: e.target.value as number })
+              }}
+            >
+              {store.rooms.map(room => (
+                <MenuItem key={room.id} value={room.id}>
+                  {t(room.name)}
+                </MenuItem>
+              ))}
+            </CustomTextField>
+
+            <CustomTextField
+              select
+              fullWidth
+              sx={{ mb: 4 }}
+              label={t('clients')}
+              SelectProps={{
+                value: values.clientIds,
+                multiple: true,
+                onChange: e => setValues({ ...values, clientIds: e.target.value as number | number[] | undefined })
+              }}
+            >
+              {store.clients.map(client => (
+                <MenuItem key={client.id} value={client.id}>
+                  {`${client.firstName} ${client.lastName}`}
+                </MenuItem>
+              ))}
+            </CustomTextField>
+
+            <CustomTextField
+              rows={4}
+              multiline
+              fullWidth
+              sx={{ mb: 6.5 }}
+              label={t('note')}
+              id='event-note'
+              value={values.note}
+              onChange={e => setValues({ ...values, note: e.target.value })}
+            />
+
             <CustomTextField
               select
               fullWidth
@@ -335,6 +408,7 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
               value={values.trainerEarnings}
               onChange={e => setValues({ ...values, trainerEarnings: Number(e.target.value) as number })}
             />
+
             <FormControl sx={{ mb: 4, display: 'block' }}>
               <FormControlLabel
                 label={t('isSubstituted')}
@@ -366,6 +440,7 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
                 ))}
               </CustomTextField>
             )}
+
             <FormControl sx={{ mb: 4, display: 'block' }}>
               <FormControlLabel
                 label={t('hasAssistant')}
@@ -380,52 +455,34 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
               />
             </FormControl>
             {values.hasAssistant && (
-              <CustomTextField
-                select
-                fullWidth
-                sx={{ mb: 4 }}
-                label={t('assistantTrainer')}
-                SelectProps={{
-                  value: values.assistantTrainerId,
-                  onChange: e => setValues({ ...values, assistantTrainerId: Number(e.target.value) as number })
-                }}
-              >
-                {store.trainers.map(trainer => (
-                  <MenuItem key={trainer.id} value={trainer.id}>
-                    {`${trainer.firstName} ${trainer.lastName}`}
-                  </MenuItem>
-                ))}
-              </CustomTextField>
+              <>
+                <CustomTextField
+                  select
+                  fullWidth
+                  sx={{ mb: 4 }}
+                  label={t('assistantTrainer')}
+                  SelectProps={{
+                    value: values.assistantTrainerId,
+                    onChange: e => setValues({ ...values, assistantTrainerId: Number(e.target.value) as number })
+                  }}
+                >
+                  {store.trainers.map(trainer => (
+                    <MenuItem key={trainer.id} value={trainer.id}>
+                      {`${trainer.firstName} ${trainer.lastName}`}
+                    </MenuItem>
+                  ))}
+                </CustomTextField>
+                <CustomTextField
+                  fullWidth
+                  type='number'
+                  sx={{ mb: 4 }}
+                  label={t('assistantTrainerEarnings')}
+                  value={values.trainerEarnings}
+                  onChange={e => setValues({ ...values, assistantTrainerEarnings: Number(e.target.value) as number })}
+                />
+              </>
             )}
 
-            <CustomTextField
-              select
-              fullWidth
-              sx={{ mb: 4 }}
-              label={t('clients')}
-              SelectProps={{
-                value: values.clientIds,
-                multiple: true,
-                onChange: e => setValues({ ...values, clientIds: e.target.value as number | number[] | undefined })
-              }}
-            >
-              {store.clients.map(client => (
-                <MenuItem key={client.id} value={client.id}>
-                  {`${client.firstName} ${client.lastName}`}
-                </MenuItem>
-              ))}
-            </CustomTextField>
-
-            <CustomTextField
-              rows={4}
-              multiline
-              fullWidth
-              sx={{ mb: 6.5 }}
-              label={t('note')}
-              id='event-note'
-              value={values.note}
-              onChange={e => setValues({ ...values, note: e.target.value })}
-            />
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <RenderSidebarFooter />
             </Box>

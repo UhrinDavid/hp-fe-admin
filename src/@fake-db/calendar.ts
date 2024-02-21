@@ -2,127 +2,68 @@
 import mock from 'src/@fake-db/mock'
 
 // ** Types
-import { EventType } from 'src/declarations/types/calendarTypes'
+import { Training } from 'src/declarations/types/global'
 
 const date = new Date()
-const nextDay = new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
+const nextHours = (date: Date, hours: number) => new Date(date.getTime() + 60 * 60 * 1000 * hours)
+const nextDays = (date: Date, days: number) => new Date(date.getTime() + 24 * 60 * 60 * 1000 * days)
 
-const nextMonth =
-  date.getMonth() === 11 ? new Date(date.getFullYear() + 1, 0, 1) : new Date(date.getFullYear(), date.getMonth() + 1, 1)
-
-const prevMonth =
-  date.getMonth() === 11 ? new Date(date.getFullYear() - 1, 0, 1) : new Date(date.getFullYear(), date.getMonth() - 1, 1)
-
-const data: { events: EventType[] } = {
+const data: { events: Training[] } = {
   events: [
     {
       id: 1,
-      url: '',
-      title: 'Design Review',
-      start: date,
-      end: nextDay,
-      allDay: false,
+      title: 'Peter Sekera',
+      backgroundColor: 'blue',
+      startDate: date,
+      endDate: nextHours(date, 1),
+      isAllDay: false,
+      trainingOption: 1,
+      room: 1,
+      trainerId: 1,
+      trainerEarnings: 40,
+      clientIds: [1],
+      clientCost: 70,
+      note: 'Trenujeme nohy',
       extendedProps: {
-        calendar: 'Business'
+        substituteTrainerId: undefined,
+        assistantTrainerId: 1,
+        assistantTrainerEarnings: 10
       }
     },
     {
       id: 2,
-      url: '',
-      title: 'Meeting With Client',
-      start: new Date(date.getFullYear(), date.getMonth() + 1, -11),
-      end: new Date(date.getFullYear(), date.getMonth() + 1, -10),
-      allDay: true,
+      title: 'Katka Ďurková',
+      backgroundColor: 'pink',
+      startDate: nextHours(date, -3),
+      endDate: nextHours(date, 2),
+      isAllDay: false,
+      trainingOption: 6,
+      room: 2,
+      trainerId: 1,
+      trainerEarnings: 40,
+      clientIds: [2],
+      clientCost: 70,
+      note: 'Som chory, dal som zaskok',
       extendedProps: {
-        calendar: 'Business'
+        substituteTrainerId: 2
       }
     },
     {
       id: 3,
-      url: '',
-      title: 'Family Trip',
-      allDay: true,
-      start: new Date(date.getFullYear(), date.getMonth() + 1, -9),
-      end: new Date(date.getFullYear(), date.getMonth() + 1, -7),
+      title: 'Dovča',
+      backgroundColor: 'red',
+      startDate: nextDays(date, 1),
+      endDate: nextDays(date, 1),
+      isAllDay: true,
+      trainingOption: 6,
+      room: 2,
+      trainerId: 1,
+      trainerEarnings: 40,
+      clientIds: [2],
+      clientCost: 70,
+      note: 'Som chory, dal som zaskok',
       extendedProps: {
-        calendar: 'Holiday'
-      }
-    },
-    {
-      id: 4,
-      url: '',
-      title: "Doctor's Appointment",
-      start: new Date(date.getFullYear(), date.getMonth() + 1, -11),
-      end: new Date(date.getFullYear(), date.getMonth() + 1, -10),
-      allDay: true,
-      extendedProps: {
-        calendar: 'Personal'
-      }
-    },
-    {
-      id: 5,
-      url: '',
-      title: 'Dart Game?',
-      start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
-      end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
-      allDay: true,
-      extendedProps: {
-        calendar: 'ETC'
-      }
-    },
-    {
-      id: 6,
-      url: '',
-      title: 'Meditation',
-      start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
-      end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
-      allDay: true,
-      extendedProps: {
-        calendar: 'Personal'
-      }
-    },
-    {
-      id: 7,
-      url: '',
-      title: 'Dinner',
-      start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
-      end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
-      allDay: true,
-      extendedProps: {
-        calendar: 'Family'
-      }
-    },
-    {
-      id: 8,
-      url: '',
-      title: 'Product Review',
-      start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
-      end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
-      allDay: true,
-      extendedProps: {
-        calendar: 'Business'
-      }
-    },
-    {
-      id: 9,
-      url: '',
-      title: 'Monthly Meeting',
-      start: nextMonth,
-      end: nextMonth,
-      allDay: true,
-      extendedProps: {
-        calendar: 'Business'
-      }
-    },
-    {
-      id: 10,
-      url: '',
-      title: 'Monthly Checkup',
-      start: prevMonth,
-      end: prevMonth,
-      allDay: true,
-      extendedProps: {
-        calendar: 'Personal'
+        substituteTrainerId: 2
       }
     }
   ]
@@ -131,11 +72,8 @@ const data: { events: EventType[] } = {
 // ------------------------------------------------
 // GET: Return calendar events
 // ------------------------------------------------
-mock.onGet('/apps/calendar/events').reply(config => {
-  // Get requested calendars as Array
-  const { calendars } = config.params
-
-  return [200, data.events.filter(event => calendars.includes(event.extendedProps.calendar))]
+mock.onGet('/apps/calendar/events').reply(() => {
+  return [200, data.events]
 })
 
 // ------------------------------------------------

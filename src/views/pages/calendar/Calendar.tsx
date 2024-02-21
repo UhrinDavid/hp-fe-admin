@@ -1,5 +1,5 @@
 // ** React Import
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 // ** Full Calendar & it's Plugins
 import FullCalendar from '@fullcalendar/react'
@@ -17,20 +17,6 @@ import { CalendarType } from 'src/declarations/types/calendarTypes'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
 import i18n from 'i18next'
-
-const blankEvent = {
-  title: '',
-  start: '',
-  end: '',
-  allDay: false,
-  url: '',
-  extendedProps: {
-    calendar: '',
-    guests: [],
-    location: '',
-    description: ''
-  }
-}
 
 const Calendar = (props: CalendarType) => {
   // ** Props
@@ -57,10 +43,23 @@ const Calendar = (props: CalendarType) => {
     }
   }, [calendarApi, setCalendarApi])
 
+  const events = useMemo(() => {
+    const calendarEvents = store.events.map(event => ({
+      id: event.id,
+      title: event.title,
+      allDay: event.isAllDay,
+      end: event.endDate,
+      start: event.startDate,
+      backgroundColor: event.backgroundColor
+    }))
+
+    return calendarEvents
+  }, [store.events])
+
   if (store) {
     // ** calendarOptions(Props)
     const calendarOptions = {
-      events: store.events.length ? store.events : [],
+      events,
       plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin],
       initialView: 'dayGridMonth',
       headerToolbar: {
@@ -131,17 +130,6 @@ const Calendar = (props: CalendarType) => {
             handleLeftSidebarToggle()
           }
         }
-      },
-
-      dateClick(info: any) {
-        const ev = { ...blankEvent }
-        ev.start = info.date
-        ev.end = info.date
-        ev.allDay = true
-
-        // @ts-ignore
-        dispatch(handleSelectEvent(ev))
-        handleAddEventSidebarToggle()
       },
 
       /*

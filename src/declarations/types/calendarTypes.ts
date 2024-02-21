@@ -4,7 +4,7 @@ import { Dispatch } from 'redux'
 
 // ** Theme Type Import
 import { ThemeColor } from 'src/@core/layouts/types'
-import { Client, Trainer } from './global'
+import { Client, Room, Trainer, Training } from './global'
 
 export type CalendarFiltersType = 'Personal' | 'Business' | 'Family' | 'Holiday' | 'ETC'
 
@@ -20,17 +20,11 @@ export type CalendarColors = {
 
 export type EventType = {
   id: number
-  url: string
   title: string
   allDay: boolean
   end: Date | string
   start: Date | string
-  extendedProps: {
-    location?: string
-    calendar?: string
-    description?: string
-    guests?: string[] | string | undefined
-  }
+  backgroundColor: string
 }
 
 export type AddEventType = {
@@ -58,13 +52,21 @@ export type EventStateType = {
   calendar: CalendarFiltersType | string
 }
 
+export type TrainingOption = {
+  name: string
+  id: number
+}
+
 export type CalendarStoreType = {
-  events: EventType[]
-  selectedEvent: null | EventType
-  selectedCalendars: CalendarFiltersType[] | string[]
-  eventTypes: string[]
+  events: Training[]
+  selectedEvent: null | Training
+  isSelectedMyCalendar: boolean
+  selectedTrainersFilter: number[]
+  selectedClientsFilter: number[]
+  trainingOptions: TrainingOption[]
   trainers: Trainer[]
   clients: Client[]
+  rooms: Room[]
 }
 
 export type CalendarType = {
@@ -75,9 +77,9 @@ export type CalendarType = {
   calendarsColor: CalendarColors
   setCalendarApi: (val: any) => void
   handleLeftSidebarToggle: () => void
-  updateEvent: (event: EventType) => void
+  updateEvent: (event: Training) => void
   handleAddEventSidebarToggle: () => void
-  handleSelectEvent: (event: EventType) => void
+  handleSelectEvent: (event: Training) => void
 }
 
 export type SidebarLeftType = {
@@ -90,9 +92,12 @@ export type SidebarLeftType = {
   calendarsColor: CalendarColors
   handleLeftSidebarToggle: () => void
   handleAddEventSidebarToggle: () => void
-  handleAllCalendars: (val: boolean) => void
-  handleSelectEvent: (event: null | EventType) => void
-  handleCalendarsUpdate: (val: CalendarFiltersType) => void
+  handleSelectEvent: (event: null | Training) => void
+  handleSelectMyCalendar: (val: boolean) => void
+  handleTrainerFilterUpdate: (val: number) => void
+  handleAllTrainerFilter: (val: boolean) => void
+  handleClientFilterUpdate: (val: number) => void
+  handleAllClientFilter: (val: boolean) => void
 }
 
 export type AddEventSidebarType = {
@@ -103,9 +108,9 @@ export type AddEventSidebarType = {
   addEventSidebarOpen: boolean
   deleteEvent: (id: number) => void
   addEvent: (event: AddEventType) => void
-  updateEvent: (event: EventType) => void
+  updateEvent: (event: Training) => void
   handleAddEventSidebarToggle: () => void
-  handleSelectEvent: (event: null | EventType) => void
+  handleSelectEvent: (event: null | Training) => void
 }
 
 export type ExpandableCheckboxType = {

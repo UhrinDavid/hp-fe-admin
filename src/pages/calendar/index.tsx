@@ -14,7 +14,7 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Types
 import { RootState, AppDispatch } from 'src/store'
-import { CalendarColors, CalendarFiltersType } from 'src/declarations/types/calendarTypes'
+import { CalendarColors } from 'src/declarations/types/calendarTypes'
 
 // ** FullCalendar & App Components Imports
 import Calendar from 'src/views/pages/calendar/Calendar'
@@ -29,8 +29,11 @@ import {
   deleteEvent,
   updateEvent,
   handleSelectEvent,
-  handleAllCalendars,
-  handleCalendarsUpdate
+  handleSelectMyCalendar,
+  handleTrainerFilterUpdate,
+  handleAllTrainerFilter,
+  handleClientFilterUpdate,
+  handleAllClientFilter
 } from 'src/store/calendar'
 
 // ** CalendarColors
@@ -60,8 +63,8 @@ const AppCalendar = () => {
   const mdAbove = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'))
 
   useEffect(() => {
-    dispatch(fetchEvents(store.selectedCalendars as CalendarFiltersType[]))
-  }, [dispatch, store.selectedCalendars])
+    dispatch(fetchEvents())
+  }, [dispatch])
 
   const handleLeftSidebarToggle = () => setLeftSidebarOpen(!leftSidebarOpen)
 
@@ -87,10 +90,13 @@ const AppCalendar = () => {
         leftSidebarOpen={leftSidebarOpen}
         leftSidebarWidth={leftSidebarWidth}
         handleSelectEvent={handleSelectEvent}
-        handleAllCalendars={handleAllCalendars}
-        handleCalendarsUpdate={handleCalendarsUpdate}
         handleLeftSidebarToggle={handleLeftSidebarToggle}
         handleAddEventSidebarToggle={handleAddEventSidebarToggle}
+        handleSelectMyCalendar={handleSelectMyCalendar}
+        handleTrainerFilterUpdate={handleTrainerFilterUpdate}
+        handleAllTrainerFilter={handleAllTrainerFilter}
+        handleClientFilterUpdate={handleClientFilterUpdate}
+        handleAllClientFilter={handleAllClientFilter}
       />
       <Box
         sx={{
