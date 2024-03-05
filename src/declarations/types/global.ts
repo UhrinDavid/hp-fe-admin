@@ -4,10 +4,42 @@ export type Trainer = {
   lastName: string
 }
 
+export type TrainingGroup = {
+  id: number
+  groupLead: Client
+  members: Client[]
+}
+
+export type InvoicingCompany = {
+  companyName: string
+  identityNumber: number
+  taxPayerNumber: number
+  taxNumber: number
+  addressLine1: string
+  postalCode: string
+  invoiceContent: string
+}
+
 export type Client = {
   id: number
+
+  // isActive: boolean
   firstName: string
   lastName: string
+
+  // phone: string
+  // email: string
+  // birthDate: Date
+  // company: string
+  // reference: string
+  // gdpr: string
+  // note: string
+  // paymentType: 'invoice' | 'terminal'
+  // paymentMethod: 'spotreba' | 'kredit' | 'barter' | 'pausal'
+  // trainer: Trainer
+  // customRate: number
+  // shouldIncludeEntry: boolean
+  // customTrainerRate: number
 }
 
 export type Room = {

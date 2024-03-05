@@ -44,7 +44,7 @@ const ExpandableCheckbox = (props: ExpandableCheckboxType) => {
           />
         }
       />
-      <Collapse in={expand}>
+      <Collapse in={expand} sx={{ overflowY: 'auto' }}>
         <Box sx={{ paddingLeft: 6, width: '100%', display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
           {expandContent}
         </Box>

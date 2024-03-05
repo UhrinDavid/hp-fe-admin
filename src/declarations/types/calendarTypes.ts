@@ -119,3 +119,9 @@ export type ExpandableCheckboxType = {
   selectedGroupItemsLength: number
   expandContent: ReactNode[]
 }
+
+export type ClientDetails = Client & {
+  includeGymEntry: boolean
+  gymEntryRate?: number
+  paidAbsence: boolean
+}

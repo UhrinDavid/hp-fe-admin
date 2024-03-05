@@ -1,10 +1,11 @@
 // ** React Imports
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 // ** MUI Imports
 import CssBaseline from '@mui/material/CssBaseline'
 import GlobalStyles from '@mui/material/GlobalStyles'
 import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles'
+import * as locales from '@mui/material/locale'
 
 // ** Type Imports
 import { Settings } from 'src/@core/context/settingsContext'
@@ -21,6 +22,8 @@ import themeOptions from './ThemeOptions'
 // ** Global Styles
 import GlobalStyling from './globalStyles'
 
+import i18n from 'i18next'
+
 interface Props {
   settings: Settings
   children: ReactNode
@@ -31,7 +34,16 @@ const ThemeComponent = (props: Props) => {
   const { settings, children } = props
 
   // ** Pass merged ThemeOptions (of core and user) to createTheme function
-  let theme = createTheme(themeOptions(settings, 'light'))
+  const locale: keyof typeof locales = useMemo(() => {
+    switch (i18n.language) {
+      case 'sk':
+        return 'skSK'
+      default:
+        return 'skSK'
+    }
+  }, [])
+
+  let theme = createTheme(themeOptions(settings, 'light'), locales[locale])
 
   // ** Set responsive font sizes to true
   if (themeConfig.responsiveFontSizes) {

@@ -38,5 +38,11 @@
   "threeOnOne": "3na1",
   "smallGroup": "Small group",
   "diagnostics": "Diagnostika",
-  "consultation": "Konzultácia"
+  "consultation": "Konzultácia",
+  "firstName": "Meno",
+  "lastName": "Priezvisko",
+  "includeGymEntry": "Pripočítať vstup",
+  "gymEntryRate": "Vstup",
+  "paidAbsence": "Platená neúčasť",
+  "clientDetails": "Detaily klientov"
 }

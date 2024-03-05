@@ -65,6 +65,24 @@ const data: { events: Training[] } = {
       extendedProps: {
         substituteTrainerId: 2
       }
+    },
+    {
+      id: 4,
+      title: 'Peter Strnisko',
+      backgroundColor: 'green',
+      startDate: nextHours(date, -3),
+      endDate: nextHours(date, 1),
+      isAllDay: false,
+      trainingOption: 6,
+      room: 2,
+      trainerId: 1,
+      trainerEarnings: 40,
+      clientIds: [2],
+      clientCost: 70,
+      note: 'Som chory, dal som zaskok',
+      extendedProps: {
+        substituteTrainerId: 2
+      }
     }
   ]
 }
