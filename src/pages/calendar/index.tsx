@@ -32,6 +32,8 @@ import {
   handleSelectMyCalendar,
   handleTrainerFilterUpdate,
   handleAllTrainerFilter,
+  handleRoomFilterUpdate,
+  handleAllRoomsFilter,
   handleClientFilterUpdate,
   handleAllClientFilter
 } from 'src/store/calendar'
@@ -78,7 +80,7 @@ const AppCalendar = () => {
         ...(skin === 'bordered' && { border: theme => `1px solid ${theme.palette.divider}` })
       }}
       style={{
-        height: '100%'
+        maxHeight: '100%'
       }}
     >
       <SidebarLeft
@@ -95,6 +97,8 @@ const AppCalendar = () => {
         handleSelectMyCalendar={handleSelectMyCalendar}
         handleTrainerFilterUpdate={handleTrainerFilterUpdate}
         handleAllTrainerFilter={handleAllTrainerFilter}
+        handleRoomFilterUpdate={handleRoomFilterUpdate}
+        handleAllRoomsFilter={handleAllRoomsFilter}
         handleClientFilterUpdate={handleClientFilterUpdate}
         handleAllClientFilter={handleAllClientFilter}
       />

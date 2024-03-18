@@ -4,7 +4,8 @@ import { Dispatch } from 'redux'
 
 // ** Theme Type Import
 import { ThemeColor } from 'src/@core/layouts/types'
-import { Client, Room, Trainer, Training } from './global'
+
+import { Client, Room, SmallGroup, Trainer, Training } from './global'
 
 export type CalendarFiltersType = 'Personal' | 'Business' | 'Family' | 'Holiday' | 'ETC'
 
@@ -62,11 +63,14 @@ export type CalendarStoreType = {
   selectedEvent: null | Training
   isSelectedMyCalendar: boolean
   selectedTrainersFilter: number[]
+  selectedRoomsFilter: number[]
   selectedClientsFilter: number[]
   trainingOptions: TrainingOption[]
   trainers: Trainer[]
   clients: Client[]
   rooms: Room[]
+  gymEntryRate: number
+  smallGroups: SmallGroup[]
 }
 
 export type CalendarType = {
@@ -96,6 +100,8 @@ export type SidebarLeftType = {
   handleSelectMyCalendar: (val: boolean) => void
   handleTrainerFilterUpdate: (val: number) => void
   handleAllTrainerFilter: (val: boolean) => void
+  handleRoomFilterUpdate: (val: number) => void
+  handleAllRoomsFilter: (val: boolean) => void
   handleClientFilterUpdate: (val: number) => void
   handleAllClientFilter: (val: boolean) => void
 }
@@ -124,4 +130,8 @@ export type ClientDetails = Client & {
   includeGymEntry: boolean
   gymEntryRate?: number
   paidAbsence: boolean
+}
+
+export type CalendarEvent = EventType & {
+  extendedProps: Training
 }

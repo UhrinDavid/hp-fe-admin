@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, forwardRef, useCallback, Fragment } from 'react'
+import { useState, useEffect, forwardRef, useCallback, Fragment, useMemo } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -29,8 +29,9 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 
 // ** Types
 import { EventDateType, AddEventSidebarType, ClientDetails } from 'src/declarations/types/calendarTypes'
-import { FormLabel } from '@mui/material'
+import { InputLabel } from '@mui/material'
 import { addDays, addMonths } from 'date-fns'
+import { SMALL_GROUP_ID } from 'src/store/calendar'
 
 interface PickerProps {
   label?: string
@@ -46,6 +47,7 @@ interface DefaultStateType {
   repeatDays: string[] | undefined
   repeatEventUntilDate: Date | string | undefined
   trainingOption: number
+  smallGroupId?: number
   room: number
   trainerId: number
   trainerEarnings: number
@@ -101,7 +103,7 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
     setValues(prevState => {
       const clientIds = prevState.clientIds
       let clientDetails = prevState.clientDetails
-      clientDetails?.filter(client => !clientIds.includes(client.id))
+      clientDetails = clientDetails?.filter(client => clientIds.includes(client.id))
       clientDetails = [
         ...clientDetails,
         ...clientIds
@@ -155,22 +157,48 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
     // }
   }, [])
 
-  const handleClickIncludeGymEntryCheckbox = useCallback((newVal: boolean, id: number) => {
-    setValues(prevState => ({
-      ...prevState,
-      clientDetails: prevState.clientDetails.map(client => {
-        if (client.id === id) {
-          return {
-            ...client,
-            includeGymEntry: newVal,
-            gymEntryRate: undefined
-          }
-        }
+  const onSubmit = () => {
+    const modifiedEvent = {
+      url: values.url,
+      display: 'block',
+      title: data.title,
+      end: values.endDate,
+      allDay: values.allDay,
+      start: values.startDate,
+      extendedProps: {
+        calendar: capitalize(values.calendar),
+        guests: values.guests && values.guests.length ? values.guests : undefined,
+        description: values.description.length ? values.description : undefined
+      }
+    }
+    if (store.selectedEvent === null || (store.selectedEvent !== null && !store.selectedEvent.title.length)) {
+      dispatch(addEvent(modifiedEvent))
+    } else {
+      dispatch(updateEvent({ id: store.selectedEvent.id, ...modifiedEvent }))
+    }
+    calendarApi.refetchEvents()
+    handleSidebarClose()
+  }
 
-        return client
-      })
-    }))
-  }, [])
+  const handleClickIncludeGymEntryCheckbox = useCallback(
+    (newVal: boolean, id: number) => {
+      setValues(prevState => ({
+        ...prevState,
+        clientDetails: prevState.clientDetails.map(client => {
+          if (client.id === id) {
+            return {
+              ...client,
+              includeGymEntry: newVal,
+              gymEntryRate: store.gymEntryRate
+            }
+          }
+
+          return client
+        })
+      }))
+    },
+    [store.gymEntryRate]
+  )
 
   const handleClickPaidAbsenceCheckbox = useCallback((newVal: boolean, id: number) => {
     setValues(prevState => ({
@@ -255,12 +283,33 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
     }
   }
 
+  const clientSelectValues = useMemo(() => {
+    if (values.trainingOption === SMALL_GROUP_ID && values.smallGroupId) {
+      const smallGroup = store.smallGroups.find(group => group.id === values.smallGroupId)!
+
+      return store.clients.filter(client => smallGroup.clientIds.includes(client.id))
+    }
+
+    return store.clients
+  }, [store.clients, store.smallGroups, values.smallGroupId, values.trainingOption])
+
+  useEffect(() => {
+    if (values.smallGroupId) {
+      setValues(prevState => ({
+        ...prevState,
+        clientIds: clientSelectValues.map(value => value.id),
+        clientDetails: []
+      }))
+    }
+  }, [values.smallGroupId, clientSelectValues])
+
   const clientDetailsColumns: GridColDef[] = [
-    { headerName: t('firstName') ?? '', field: 'firstName' },
-    { headerName: t('lastName') ?? '', field: 'lastName' },
+    { headerName: t('firstName') ?? '', field: 'firstName', flex: 1 },
+    { headerName: t('lastName') ?? '', field: 'lastName', flex: 1 },
     {
       headerName: t('includeGymEntry') ?? '',
       field: 'includeGymEntry',
+      flex: 1,
       renderCell: ({ row }: { row: ClientDetails }) => (
         <Checkbox
           checked={row.includeGymEntry}
@@ -271,6 +320,7 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
     {
       headerName: t('gymEntryRate') ?? '',
       field: 'gymEntryRate',
+      flex: 1,
       renderCell: ({ row }: { row: ClientDetails }) =>
         row.includeGymEntry ? (
           <CustomTextField
@@ -285,6 +335,7 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
     {
       headerName: t('paidAbsence') ?? '',
       field: 'paidAbsence',
+      flex: 1,
       renderCell: ({ row }: { row: ClientDetails }) => (
         <Checkbox checked={row.paidAbsence} onChange={() => handleClickPaidAbsenceCheckbox(!row.paidAbsence, row.id)} />
       )
@@ -339,7 +390,7 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
       </Box>
       <Box className='sidebar-body' sx={{ p: theme => theme.spacing(0, 6, 6) }}>
         <DatePickerWrapper>
-          <form autoComplete='off'>
+          <form onSubmit={onSubmit} autoComplete='off'>
             <Box sx={{ mb: 4 }}>
               <DatePicker
                 selectsStart
@@ -418,7 +469,14 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
               label={t('trainingOption')}
               SelectProps={{
                 value: values.trainingOption,
-                onChange: e => setValues({ ...values, trainingOption: e.target.value as number })
+                onChange: e =>
+                  setValues({
+                    ...values,
+                    trainingOption: e.target.value as number,
+                    smallGroupId: undefined,
+                    clientIds: [],
+                    clientDetails: []
+                  })
               }}
             >
               {store.trainingOptions.map(option => (
@@ -427,6 +485,25 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
                 </MenuItem>
               ))}
             </CustomTextField>
+
+            {values.trainingOption === SMALL_GROUP_ID && (
+              <CustomTextField
+                select
+                fullWidth
+                sx={{ mb: 4 }}
+                label={t('smallGroupSelect')}
+                SelectProps={{
+                  value: values.smallGroupId,
+                  onChange: e => setValues({ ...values, smallGroupId: e.target.value as number })
+                }}
+              >
+                {store.smallGroups.map(option => (
+                  <MenuItem key={option.name} value={option.id}>
+                    {t(option.name)}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            )}
 
             <CustomTextField
               select
@@ -445,40 +522,63 @@ const AddTrainingSidebar = (props: AddEventSidebarType) => {
               ))}
             </CustomTextField>
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <CustomTextField
-                select
-                fullWidth
-                sx={{ mb: 4, flexGrow: 5 }}
-                label={t('clients')}
-                SelectProps={{
-                  value: values.clientIds,
-                  multiple: true,
-                  onChange: e => setValues({ ...values, clientIds: e.target.value as number[] })
-                }}
-              >
-                {store.clients.map(client => (
-                  <MenuItem key={client.id} value={client.id}>
-                    {`${client.firstName} ${client.lastName}`}
-                  </MenuItem>
-                ))}
-              </CustomTextField>
-              <IconButton>
-                <Icon icon='mingcute:user-add-2-fill' fontSize='1.5rem' />
-              </IconButton>
-            </Box>
+            {((values.trainingOption === SMALL_GROUP_ID && values.smallGroupId) ||
+              values.trainingOption !== SMALL_GROUP_ID) && (
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 3 }}>
+                <CustomTextField
+                  select
+                  fullWidth
+                  sx={{ mb: 4, flexGrow: 5 }}
+                  label={t('clients')}
+                  SelectProps={{
+                    value: values.clientIds,
+                    multiple: true,
+                    onChange: e => setValues({ ...values, clientIds: e.target.value as number[] })
+                  }}
+                >
+                  {clientSelectValues.map(client => (
+                    <MenuItem key={client.id} value={client.id}>
+                      {`${client.firstName} ${client.lastName}`}
+                    </MenuItem>
+                  ))}
+                </CustomTextField>
+                <div>
+                  <IconButton>
+                    <Icon icon='mingcute:user-add-2-fill' fontSize='1.5rem' />
+                  </IconButton>
+                </div>
+              </Box>
+            )}
 
-            <Box>
-              <FormLabel>{t('clientDetails')}</FormLabel>
-              <DataGrid
-                autoHeight
-                rows={values.clientDetails}
-                columns={clientDetailsColumns}
-                disableColumnMenu
-                disableRowSelectionOnClick
-                getRowHeight={() => 'auto'}
-              />{' '}
-            </Box>
+            {values.clientIds.length > 0 && (
+              <Box>
+                <InputLabel>{t('clientDetails')}</InputLabel>
+                <DataGrid
+                  autoHeight
+                  rows={values.clientDetails}
+                  columns={clientDetailsColumns}
+                  disableColumnMenu
+                  disableRowSelectionOnClick
+                  sx={{
+                    '& .MuiDataGrid-footerContainer': {
+                      display: 'none'
+                    },
+                    '& .MuiDataGrid-columnHeaderTitle': {
+                      whiteSpace: 'normal',
+                      lineHeight: 'normal'
+                    },
+                    '& .MuiDataGrid-columnHeader': {
+                      // Forced to use important since overriding inline styles
+                      height: 'unset !important'
+                    },
+                    '& .MuiDataGrid-columnHeaders': {
+                      // Forced to use important since overriding inline styles
+                      maxHeight: '168px !important'
+                    }
+                  }}
+                />
+              </Box>
+            )}
 
             <CustomTextField
               rows={4}

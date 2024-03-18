@@ -61,9 +61,14 @@ export type Training = {
   clientIds: number[] | number | undefined
   clientCost: number
   note: string
-  extendedProps: {
-    substituteTrainerId?: number | undefined
-    assistantTrainerId?: number | undefined
-    assistantTrainerEarnings?: number | undefined
-  }
+  substituteTrainerId?: number | undefined
+  assistantTrainerId?: number | undefined
+  assistantTrainerEarnings?: number | undefined
+}
+
+export type SmallGroup = {
+  id: number
+  name: string
+  trainerId: number
+  clientIds: number[]
 }

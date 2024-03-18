@@ -8,6 +8,7 @@
   "calendarFilterTitle": "Filter",
   "calendarMyCalendarCheckbox": "Môj kalendár",
   "calendarOtherTrainersCheckbox": "Ostatní tréneri",
+  "calendarRoomsCheckbox": "Miestnosti",
   "calendarAllClientsCheckbox": "Všetci klienti",
   "create": "Vytvoriť",
   "cancel": "Zrušiť",
@@ -44,5 +45,6 @@
   "includeGymEntry": "Pripočítať vstup",
   "gymEntryRate": "Vstup",
   "paidAbsence": "Platená neúčasť",
-  "clientDetails": "Detaily klientov"
+  "clientDetails": "Detaily klientov",
+  "smallGroupSelect": "Vybrať small grupu"
 }

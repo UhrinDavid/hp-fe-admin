@@ -8,6 +8,8 @@ import axios from 'axios'
 import { AddEventType, CalendarStoreType } from 'src/declarations/types/calendarTypes'
 import { Training } from 'src/declarations/types/global'
 
+export const SMALL_GROUP_ID = 4
+
 // ** Fetch Events
 export const fetchEvents = createAsyncThunk('appCalendar/fetchEvents', async () => {
   const response = await axios.get('/apps/calendar/events', {})
@@ -54,6 +56,7 @@ const initialState: CalendarStoreType = {
   selectedEvent: null,
   isSelectedMyCalendar: true,
   selectedTrainersFilter: [],
+  selectedRoomsFilter: [],
   selectedClientsFilter: [],
   trainingOptions: [
     {
@@ -91,6 +94,56 @@ const initialState: CalendarStoreType = {
       id: 2,
       firstName: 'Milan',
       lastName: 'Bališ'
+    },
+    {
+      id: 3,
+      firstName: 'Jana',
+      lastName: 'Nováková'
+    },
+    {
+      id: 4,
+      firstName: 'Peter',
+      lastName: 'Horváth'
+    },
+    {
+      id: 5,
+      firstName: 'Eva',
+      lastName: 'Kováčová'
+    },
+    {
+      id: 6,
+      firstName: 'Martin',
+      lastName: 'Molnár'
+    },
+    {
+      id: 7,
+      firstName: 'Veronika',
+      lastName: 'Varga'
+    },
+    {
+      id: 8,
+      firstName: 'Michal',
+      lastName: 'Šimko'
+    },
+    {
+      id: 9,
+      firstName: 'Zuzana',
+      lastName: 'Lukáčová'
+    },
+    {
+      id: 10,
+      firstName: 'Marek',
+      lastName: 'Hruška'
+    },
+    {
+      id: 11,
+      firstName: 'Lenka',
+      lastName: 'Kováčiková'
+    },
+    {
+      id: 12,
+      firstName: 'Tomáš',
+      lastName: 'Švec'
     }
   ],
   clients: [
@@ -103,6 +156,81 @@ const initialState: CalendarStoreType = {
       id: 2,
       firstName: 'Katka',
       lastName: 'Ďurková'
+    },
+    {
+      id: 3,
+      firstName: 'Miroslav',
+      lastName: 'Hudák'
+    },
+    {
+      id: 4,
+      firstName: 'Elena',
+      lastName: 'Petrovičová'
+    },
+    {
+      id: 5,
+      firstName: 'Juraj',
+      lastName: 'Kaššák'
+    },
+    {
+      id: 6,
+      firstName: 'Michaela',
+      lastName: 'Žiaková'
+    },
+    {
+      id: 7,
+      firstName: 'Lukáš',
+      lastName: 'Mihalovič'
+    },
+    {
+      id: 8,
+      firstName: 'Zuzana',
+      lastName: 'Fábryová'
+    },
+    {
+      id: 9,
+      firstName: 'Jakub',
+      lastName: 'Belko'
+    },
+    {
+      id: 10,
+      firstName: 'Simona',
+      lastName: 'Bartošová'
+    },
+    {
+      id: 11,
+      firstName: 'Marek',
+      lastName: 'Greguš'
+    },
+    {
+      id: 12,
+      firstName: 'Jana',
+      lastName: 'Lehotská'
+    },
+    {
+      id: 13,
+      firstName: 'Tomáš',
+      lastName: 'Krajčík'
+    },
+    {
+      id: 14,
+      firstName: 'Martina',
+      lastName: 'Ondrejčíková'
+    },
+    {
+      id: 15,
+      firstName: 'Milan',
+      lastName: 'Urbanec'
+    },
+    {
+      id: 16,
+      firstName: 'Veronika',
+      lastName: 'Adamčíková'
+    },
+    {
+      id: 17,
+      firstName: 'Dominik',
+      lastName: 'Lipták'
     }
   ],
   rooms: [
@@ -113,6 +241,21 @@ const initialState: CalendarStoreType = {
     {
       id: 2,
       name: 'Diagnostika'
+    }
+  ],
+  gymEntryRate: 6,
+  smallGroups: [
+    {
+      id: 1,
+      name: 'SG1',
+      trainerId: 1,
+      clientIds: [1, 2]
+    },
+    {
+      id: 2,
+      name: 'SG2',
+      trainerId: 1,
+      clientIds: [2]
     }
   ]
 }
@@ -146,6 +289,25 @@ export const appCalendarSlice = createSlice({
         state.selectedTrainersFilter = []
       }
     },
+    handleRoomFilterUpdate: (state, action) => {
+      const filterIndex = state.selectedRoomsFilter.findIndex(i => i === action.payload)
+      if (state.selectedRoomsFilter.includes(action.payload)) {
+        state.selectedRoomsFilter.splice(filterIndex, 1)
+      } else {
+        state.selectedRoomsFilter.push(action.payload)
+      }
+      if (state.selectedRoomsFilter.length === 0) {
+        state.events.length = 0
+      }
+    },
+    handleAllRoomsFilter: (state, action) => {
+      const value = action.payload
+      if (value === true) {
+        state.selectedRoomsFilter = state.trainers.map(trainer => trainer.id)
+      } else {
+        state.selectedRoomsFilter = []
+      }
+    },
     handleClientFilterUpdate: (state, action) => {
       const filterIndex = state.selectedClientsFilter.findIndex(i => i === action.payload)
       if (state.selectedClientsFilter.includes(action.payload)) {
@@ -177,6 +339,8 @@ export const {
   handleSelectMyCalendar,
   handleTrainerFilterUpdate,
   handleAllTrainerFilter,
+  handleRoomFilterUpdate,
+  handleAllRoomsFilter,
   handleClientFilterUpdate,
   handleAllClientFilter
 } = appCalendarSlice.actions

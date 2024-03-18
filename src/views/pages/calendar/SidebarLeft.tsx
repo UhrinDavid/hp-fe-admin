@@ -36,6 +36,8 @@ const SidebarLeft = (props: SidebarLeftType) => {
     handleSelectMyCalendar,
     handleTrainerFilterUpdate,
     handleAllTrainerFilter,
+    handleRoomFilterUpdate,
+    handleAllRoomsFilter,
     handleClientFilterUpdate,
     handleAllClientFilter,
     handleLeftSidebarToggle,
@@ -52,7 +54,7 @@ const SidebarLeft = (props: SidebarLeftType) => {
         sx={{ '& .MuiFormControlLabel-label': { color: 'text.secondary' } }}
         control={
           <Checkbox
-            checked={store.selectedTrainersFilter.includes(trainer.id)}
+            checked={store.selectedRoomsFilter.includes(trainer.id)}
             onChange={() => dispatch(handleTrainerFilterUpdate(trainer.id))}
           />
         }
@@ -70,6 +72,22 @@ const SidebarLeft = (props: SidebarLeftType) => {
           <Checkbox
             checked={store.selectedClientsFilter.includes(client.id)}
             onChange={() => dispatch(handleClientFilterUpdate(client.id))}
+          />
+        }
+      />
+    )
+  })
+
+  const renderRoomFilters = store.rooms.map(room => {
+    return (
+      <FormControlLabel
+        key={room.id}
+        label={`${room.name}`}
+        sx={{ '& .MuiFormControlLabel-label': { color: 'text.secondary' } }}
+        control={
+          <Checkbox
+            checked={store.selectedRoomsFilter.includes(room.id)}
+            onChange={() => dispatch(handleRoomFilterUpdate(room.id))}
           />
         }
       />
@@ -131,33 +149,57 @@ const SidebarLeft = (props: SidebarLeftType) => {
         <DatePicker inline onChange={date => calendarApi.gotoDate(date)} locale={i18n.language} />
       </DatePickerWrapper>
       <Divider sx={{ width: '100%', m: '0 !important' }} />
-      <Box sx={{ p: 6, width: '100%', display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-        <Typography variant='body2' sx={{ mb: 2, color: 'text.disabled', textTransform: 'uppercase' }}>
-          {t('calendarFilterTitle')}
-        </Typography>
-        <FormControlLabel
-          label={t('calendarMyCalendarCheckbox')}
-          sx={{ '& .MuiFormControlLabel-label': { color: 'text.secondary' } }}
-          control={<Checkbox onChange={() => dispatch(handleSelectMyCalendar(!store.isSelectedMyCalendar))} />}
-        />
-        <ExpandableCheckbox
-          labelMasterCheckbox={t('calendarOtherTrainersCheckbox')}
-          handleClickCheckbox={() =>
-            dispatch(handleAllTrainerFilter(!(store.selectedTrainersFilter.length === store.trainers.length)))
-          }
-          selectedGroupItemsLength={store.selectedTrainersFilter.length}
-          expandContent={renderTrainerFilters}
-        />
-        <Divider sx={{ width: '100%', m: '0 !important' }} />
-        <ExpandableCheckbox
-          labelMasterCheckbox={t('calendarAllClientsCheckbox')}
-          handleClickCheckbox={() =>
-            dispatch(handleAllClientFilter(!(store.selectedClientsFilter.length === store.clients.length)))
-          }
-          selectedGroupItemsLength={store.selectedClientsFilter.length}
-          expandContent={renderClientFilters}
-        />
-      </Box>
+      <div
+        style={{
+          overflowY: 'auto',
+          maxHeight: '100%'
+        }}
+      >
+        <Box
+          sx={{
+            p: 6,
+            width: '100%',
+            display: 'flex',
+            alignItems: 'flex-start',
+            flexDirection: 'column'
+          }}
+        >
+          <Typography variant='body2' sx={{ mb: 2, color: 'text.disabled', textTransform: 'uppercase' }}>
+            {t('calendarFilterTitle')}
+          </Typography>
+          <FormControlLabel
+            label={t('calendarMyCalendarCheckbox')}
+            sx={{ '& .MuiFormControlLabel-label': { color: 'text.secondary' } }}
+            control={<Checkbox onChange={() => dispatch(handleSelectMyCalendar(!store.isSelectedMyCalendar))} />}
+          />
+          <ExpandableCheckbox
+            labelMasterCheckbox={t('calendarOtherTrainersCheckbox')}
+            handleClickCheckbox={() =>
+              dispatch(handleAllTrainerFilter(!(store.selectedRoomsFilter.length === store.trainers.length)))
+            }
+            selectedGroupItemsLength={store.selectedRoomsFilter.length}
+            expandContent={renderTrainerFilters}
+          />
+          <Divider sx={{ width: '100%', m: '0 !important' }} />
+          <ExpandableCheckbox
+            labelMasterCheckbox={t('calendarRoomsCheckbox')}
+            handleClickCheckbox={() =>
+              dispatch(handleAllRoomsFilter(!(store.selectedRoomsFilter.length === store.rooms.length)))
+            }
+            selectedGroupItemsLength={store.selectedRoomsFilter.length}
+            expandContent={renderRoomFilters}
+          />
+          <Divider sx={{ width: '100%', m: '0 !important' }} />
+          <ExpandableCheckbox
+            labelMasterCheckbox={t('calendarAllClientsCheckbox')}
+            handleClickCheckbox={() =>
+              dispatch(handleAllClientFilter(!(store.selectedClientsFilter.length === store.clients.length)))
+            }
+            selectedGroupItemsLength={store.selectedClientsFilter.length}
+            expandContent={renderClientFilters}
+          />
+        </Box>
+      </div>
     </Drawer>
   )
 }
